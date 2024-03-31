@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         helloTextView.text = "Hello, debugging!"
         logging()
         division()
-    }/**dasd */
+    }
 
     private fun logging() {
         Log.e(TAG, "ERROR: a serious error like an app crash")
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         repeat(4) {
             Thread.sleep(3)
             findViewById<TextView>(R.id.division_textview).setText("${numerator / denominator}")
-            //Log.v(TAG, "${numerator / denominator}")
+            Log.v(TAG, "${numerator / denominator}")
             denominator--
         }
     }
