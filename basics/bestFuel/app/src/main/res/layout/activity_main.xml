@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <Button
+        android:id="@+id/btnSelectFuelA"
+        android:layout_width="130dp"
+        android:layout_height="56dp"
+        android:text="@string/bt_select_fuel_a"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFuelA"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvFuelA"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tvFuelA"
+        android:layout_width="230dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="64dp"
+        android:padding="16dp"
+        android:text="@string/tv_fuel_a"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvConsumptionA"
+        android:layout_width="160dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="40dp"
+        android:padding="16dp"
+        android:text="@string/tv_fuel_consumption"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/etConsumptionA"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFuelA" />
+
+    <EditText
+        android:id="@+id/etConsumptionA"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:hint="@string/tv_fuel_consumption"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal"
+        android:padding="16dp"
+        android:textColorHint="#546E7A"
+        app:layout_constraintBottom_toBottomOf="@+id/tvConsumptionA"
+        app:layout_constraintStart_toEndOf="@+id/tvConsumptionA" />
+
+    <TextView
+        android:id="@+id/tvPriceA"
+        android:layout_width="161dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="36dp"
+        android:padding="16dp"
+        android:text="@string/tv_fuel_price"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvConsumptionA" />
+
+
+    <EditText
+        android:id="@+id/etPriceA"
+        android:layout_width="166dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:hint="@string/tv_fuel_price"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal"
+        android:padding="16dp"
+        android:textColorHint="#546E7A"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPriceA"
+        app:layout_constraintStart_toEndOf="@+id/tvPriceA" />
+
+    <TextView
+        android:id="@+id/tvConsumptionB"
+        android:layout_width="165dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="36dp"
+        android:padding="16dp"
+        android:text="@string/tv_fuel_consumption"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/etConsumptionA"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFuelB" />
+
+    <TextView
+        android:id="@+id/tvFuelB"
+        android:layout_width="230dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="64dp"
+        android:padding="16dp"
+        android:text="@string/tv_fuel_b"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvPriceA" />
+
+    <Button
+        android:id="@+id/btnSelectFuelB"
+        android:layout_width="130dp"
+        android:layout_height="56dp"
+        android:text="@string/bt_select_fuel_a"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvFuelB"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvFuelB"
+        tools:ignore="MissingConstraints" />
+
+
+    <TextView
+        android:id="@+id/tvPriceB"
+        android:layout_width="170dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="32dp"
+        android:padding="16dp"
+        android:text="@string/tv_fuel_price"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvConsumptionB" />
+
+    <EditText
+        android:id="@+id/etPriceB"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="12dp"
+        android:hint="@string/tv_fuel_price"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal"
+        android:padding="16dp"
+        android:textColorHint="#546E7A"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPriceB"
+        app:layout_constraintStart_toEndOf="@+id/tvPriceB" />
+
+    <EditText
+        android:id="@+id/etConsumptionB"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:hint="@string/tv_fuel_consumption"
+        android:importantForAutofill="no"
+        android:inputType="numberDecimal"
+        android:padding="16dp"
+        android:textColorHint="#546E7A"
+        app:layout_constraintBottom_toBottomOf="@+id/tvConsumptionB"
+        app:layout_constraintStart_toEndOf="@+id/tvConsumptionB" />
+
+
+    <Button
+        android:id="@+id/btnCompare"
+        android:layout_width="150dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/bt_compare"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPriceB"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="320dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="24dp"
+        android:padding="16dp"
+        android:text="@string/tv_result"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCompare" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

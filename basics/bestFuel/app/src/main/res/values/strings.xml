@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">bestFuel</string>
+    <string name="tv_fuel_a">Combustível A</string>
+    <string name="bt_select_fuel_a">Selecionar</string>
+    <string name="tv_fuel_consumption">Consumo (km/L)</string>
+    <string name="tv_fuel_price">Valor litro (R$)</string>
+    <string name="tv_fuel_b">Combustível B</string>
+    <string name="bt_select_fuel_b">Selecionar</string>
+    <string name="bt_compare">Comparar</string>
+    <string name="tv_result"></string>
+</resources>
