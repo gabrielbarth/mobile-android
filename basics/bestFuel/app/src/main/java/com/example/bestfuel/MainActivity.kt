@@ -1,88 +1,147 @@
 package com.example.bestfuel
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bestfuel.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var tvFuelA : TextView
-    private lateinit var btnSelectFuelA : Button
-    private lateinit var tvFuelB : TextView
-    private lateinit var btnSelectFuelB : Button
-    private lateinit var btnCompare : Button
-    private lateinit var etPriceA : EditText
-    private lateinit var etConsumptionA : EditText
-    private lateinit var etPriceB : EditText
-    private lateinit var etConsumptionB : EditText
-    private lateinit var tvResult : TextView
+    private lateinit var binding: ActivityMainBinding
 
+    @SuppressLint("StringFormatInvalid")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
 
-        tvFuelA  = findViewById(R.id.tvFuelA)
-        btnSelectFuelA = findViewById(R.id.btnSelectFuelA)
-        tvFuelB  = findViewById(R.id.tvFuelB)
-        btnSelectFuelB = findViewById(R.id.btnSelectFuelB)
-        etPriceA = findViewById(R.id.etPriceA)
-        etConsumptionA = findViewById(R.id.etConsumptionA)
-        etPriceB = findViewById(R.id.etPriceB)
-        etConsumptionB = findViewById(R.id.etConsumptionB)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        btnCompare = findViewById(R.id.btnCompare)
-        tvResult = findViewById(R.id.tvResult)
-
-        val getResultFuelA = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val selectedItem = result.data?.getStringExtra("selectedItem")
-                tvFuelA.text = ("Combustível A: $selectedItem")
-                btnSelectFuelA.text = "Alterar"
+        val getResultFuelA =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    val selectedItem = result.data?.getStringExtra("selectedItem")
+                    binding.tvFuelA.text = ("Combustível A: $selectedItem")
+                    binding.btnSelectFuelA.text = "Alterar"
+                }
             }
-        }
 
-        val getResultFuelB = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val selectedItem = result.data?.getStringExtra("selectedItem")
-                tvFuelB.text = ("Combustível B: $selectedItem")
-                btnSelectFuelB.text = "Alterar"
+        val getResultFuelB =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == RESULT_OK) {
+                    val selectedItem = result.data?.getStringExtra("selectedItem")
+                    binding.tvFuelB.text = ("Combustível B: $selectedItem")
+                    binding.btnSelectFuelB.text = "Alterar"
+                }
             }
-        }
 
-        btnSelectFuelA.setOnClickListener {
+        binding.btnSelectFuelA.setOnClickListener {
             onSelectFuel(getResultFuelA)
         }
-        btnSelectFuelB.setOnClickListener {
+        binding.btnSelectFuelB.setOnClickListener {
             onSelectFuel(getResultFuelB)
         }
-        btnCompare.setOnClickListener {
+        binding.btnCompare.setOnClickListener {
             onCompare()
+        }
+
+        if(savedInstanceState != null){
+            val result =   savedInstanceState.getString("result")
+            binding.tvResult.text = getString(R.string.tv_result, result)
+        } else {
+            binding.tvResult.text = getString(R.string.tv_result, "")
         }
 
     }
 
-     private fun onSelectFuel(getResult: ActivityResultLauncher<Intent>){
+    private fun onSelectFuel(getResult: ActivityResultLauncher<Intent>) {
         val intent = Intent(this, SelectFuelActivity::class.java)
         getResult.launch(intent)
     }
 
-    private fun onCompare(){
-        var resultA =   etConsumptionA.text.toString().toDouble() / etPriceA.text.toString().toDouble()
-        var resultB = etConsumptionB.text.toString().toDouble() / etPriceB.text.toString().toDouble()
+    private fun showValidationMessage(text: String){
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+        binding.tvResult.text = ""
+    }
 
-        val bestFuel =  if (resultA >= resultB) {
-            "${tvFuelA.text} é a melhor opção!"
-        } else {
-            "${tvFuelB.text} é a melhor opção!"
+    private fun validateFields(): Boolean {
+        val inputTextPriceA = binding.etPriceA.text.toString().toDoubleOrNull() ?: null
+        val inputTextPriceB = binding.etPriceB.text.toString().toDoubleOrNull() ?: null
+        val inputTextConsumptionA = binding.etConsumptionA.text.toString().toDoubleOrNull() ?: null
+        val inputTextConsumptionB = binding.etConsumptionB.text.toString().toDoubleOrNull() ?: null
+
+        if (inputTextPriceA == null) {
+            showValidationMessage("Preencha o Valor Litro do combustível A!")
+            return false
+
+        } else if (inputTextPriceB == null) {
+            showValidationMessage("Preencha o Valor Litro do combustível B!")
+            return false
+
+        } else if (inputTextConsumptionA == null ) {
+            showValidationMessage("Preencha o consumo do combustível A!")
+            return false
+
+        } else if (inputTextConsumptionB == null ) {
+            showValidationMessage("Preencha o consumo do combustível B!")
+            return false
         }
 
-        tvResult.text = bestFuel
+        return true
+    }
+
+    private fun validateFuels(): Boolean {
+        val textFuelA = binding.tvFuelA.text.toString()
+        val textFuelB = binding.tvFuelB.text.toString()
+
+        if(textFuelA == "Combustível A") {
+            showValidationMessage("Preencha qual é o combustível A!")
+            return false
+        }
+
+        if(textFuelB == "Combustível B") {
+            showValidationMessage("Preencha qual é o combustível B!")
+            return false
+        }
+
+        if(textFuelA.split(" ").last() == textFuelB.split(" ").last()) {
+            showValidationMessage("Selecione combustível diferentes para A e B!")
+            return false
+        }
+
+        return true
+    }
+
+    private fun onCompare() {
+
+        if(!validateFields() || !validateFuels()) {
+            return
+        }
+
+
+        var resultA =
+            binding.etConsumptionA.text.toString().toDouble() / binding.etPriceA.text.toString().toDouble()
+        var resultB =
+            binding.etConsumptionB.text.toString().toDouble() / binding.etPriceB.text.toString().toDouble()
+
+        val bestFuel = if (resultA > resultB) {
+            "${binding.tvFuelA.text} é a melhor opção!"
+        } else if (resultA < resultB) {
+            "${binding.tvFuelB.text} é a melhor opção!"
+        } else {
+            "As duas opções são equivalentes!"
+        }
+
+        binding.tvResult.text = bestFuel
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("result", binding.tvResult.text.toString())
     }
 }
