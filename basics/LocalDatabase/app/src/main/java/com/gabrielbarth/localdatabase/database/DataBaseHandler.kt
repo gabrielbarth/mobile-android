@@ -2,6 +2,7 @@ package com.gabrielbarth.localdatabase.database
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.gabrielbarth.localdatabase.entity.Cadastro
@@ -88,6 +89,22 @@ class DatabaseHandler(context: Context) :
         }
 
         return registros
+    }
+
+    fun cursorList() : Cursor {
+        val db = this.writableDatabase
+
+        val registro = db.query(
+            "cadastro",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
+
+        return registro
     }
 
 
