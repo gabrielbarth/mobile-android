@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">LocalDatabase</string>
+    <string name="alterar">Alterar</string>
+    <string name="excluir">Excluir</string>
+    <string name="incluir">Incluir</string>
+    <string name="listar">Listar</string>
+    <string name="pesquisar">Pesquisar</string>
+    <string name="telefone">Telefone:</string>
+    <string name="nome">Nome:</string>
+    <string name="cod">Cod:</string>
+    <string name="informe_o_nome">Informe o nome</string>
+    <string name="informe_o_telefone">Informe o Telefone</string>
+    <string name="informe_o_c_digo">Informe o Código</string>
+</resources>
