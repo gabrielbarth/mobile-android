@@ -1,6 +1,6 @@
 package com.gabrielbarth.localdatabase
 
-import android.content.ContentValues
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun btPListarOnClick() {
+        /*
         val registro = banco.list()
 
         var saida = StringBuilder()
@@ -96,7 +97,10 @@ class MainActivity : AppCompatActivity() {
             saida.append("\n")
         }
 
-        Toast.makeText(this, saida.toString(), Toast.LENGTH_LONG).show()
+        Toast.makeText( this, saida.toString(), Toast.LENGTH_LONG ).show()*/
+        val intent = Intent( this, ListActivity::class.java )
+        startActivity( intent )
+
     }
 
 }
