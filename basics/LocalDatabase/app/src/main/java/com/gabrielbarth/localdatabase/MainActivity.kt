@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
         setButtonListener()
 
         banco = DatabaseHandler(this)
+
+        println( "onCreate() executed" )
     }
 
     private fun setButtonListener() {
@@ -100,7 +102,36 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText( this, saida.toString(), Toast.LENGTH_LONG ).show()*/
         val intent = Intent( this, ListActivity::class.java )
         startActivity( intent )
+    }
 
+    override fun onStart() {
+        super.onStart()
+        println( "onStart() executed" )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        println( "onResume() executed" )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        println( "onPause() executed" )
+    }
+
+    override fun onStop() {
+        super.onStop()
+        println( "onStop() executed" )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println( "onDestroy() executed" )
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        println( "onDestroy() executed" )
     }
 
 }
