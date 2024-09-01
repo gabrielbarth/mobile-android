@@ -13,25 +13,19 @@ import com.gabrielbarth.localdatabase.R
 import com.gabrielbarth.localdatabase.entity.Cadastro
 import com.gabrielbarth.localdatabase.MainActivity
 
-class MyAdapter(val context: Context, val cursor: Cursor) : BaseAdapter() {
+class MyAdapter(val context: Context, val registers: MutableList<Cadastro>) : BaseAdapter() {
     override fun getCount(): Int {
-        return cursor.count
+        return registers.size
     }
 
     override fun getItem(position: Int): Any {
-        cursor.moveToPosition(position)
-        val cadastro = Cadastro(
-            cursor.getInt(0),
-            cursor.getString(1),
-            cursor.getString(2)
-        )
+        val cadastro = registers.get( position )
         return cadastro
     }
 
     override fun getItemId(position: Int): Long {
-
-        cursor.moveToPosition(position)
-        return cursor.getLong(0)
+        val cadastro = registers.get( position )
+        return cadastro._id.toLong()
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -43,26 +37,25 @@ class MyAdapter(val context: Context, val cursor: Cursor) : BaseAdapter() {
         val tvTelefoneElementoLista = v.findViewById<TextView>(R.id.tvTelefoneElementoLista)
         val btEditarElementoLista = v.findViewById<ImageButton>( R.id.btEditarElementoLista )
 
-        cursor.moveToPosition(position)
+        val register = registers.get( position )
 
-        tvNomeElementoLista.setText(cursor.getString(1))
-        tvTelefoneElementoLista.setText(cursor.getString(2))
+        tvNomeElementoLista.setText( register.nome )
+        tvTelefoneElementoLista.setText( register.telefone )
 
         btEditarElementoLista.setOnClickListener{
-            cursor.moveToPosition( position )
+            val register = registers.get( position )
 
             val intent = Intent( context, MainActivity::class.java)
 
-            intent.putExtra( "cod", cursor.getInt( 0 ) )
-            intent.putExtra( "nome", cursor.getString( 1 ) )
-            intent.putExtra( "telefone", cursor.getString( 2 ) )
+            intent.putExtra( "cod", register._id )
+            intent.putExtra( "nome", register.nome )
+            intent.putExtra( "telefone", register.telefone )
 
             context.startActivity( intent )
         }
 
         return v
     }
-
 
 
 }

@@ -1,137 +1,141 @@
 package com.gabrielbarth.localdatabase
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.gabrielbarth.localdatabase.databinding.ActivityMainBinding
 import com.gabrielbarth.localdatabase.database.DatabaseHandler
+import com.gabrielbarth.localdatabase.databinding.ActivityMainBinding
 import com.gabrielbarth.localdatabase.entity.Cadastro
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var banco: DatabaseHandler
+    private lateinit var binding : ActivityMainBinding
+    private lateinit var banco : DatabaseHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = ActivityMainBinding.inflate( layoutInflater )
+        setContentView(binding.root )
 
         setButtonListener()
 
-        banco = DatabaseHandler(this)
+        //binding.etCod.setEnabled( false )
 
-        println( "onCreate() executed" )
+        if ( intent.getIntExtra( "cod", 0 ) != 0 ) {
+            binding.etCod.setText( intent.getIntExtra( "cod", 0 ).toString() )
+            binding.etNome.setText( intent.getStringExtra( "nome" ) )
+            binding.etTelefone.setText( intent.getStringExtra( "telefone" ) )
+        } else {
+            binding.btExcluir.visibility = View.GONE
+            binding.btPesquisar.visibility = View.GONE
+        }
+
+        banco = DatabaseHandler(this )
+
+        System.out.println( "onCreate() executado" )
     }
 
     private fun setButtonListener() {
-        binding.btIncluir.setOnClickListener {
-            btIncluirOnClick()
+
+        binding.btSalvar.setOnClickListener{
+            btSalvarOnClick()
         }
 
-        binding.btAlterar.setOnClickListener {
-            btAlterarOnClick()
-        }
-
-        binding.btExcluir.setOnClickListener {
+        binding.btExcluir.setOnClickListener{
             btExcluirOnClick()
         }
 
-        binding.btPesquisar.setOnClickListener {
+        binding.btPesquisar.setOnClickListener{
             btPesquisarOnClick()
         }
 
-        binding.btListar.setOnClickListener {
-            btPListarOnClick()
+    }
+
+    private fun btSalvarOnClick() {
+        if ( binding.etCod.text.isEmpty() ) {
+            banco.insert( Cadastro( 0, binding.etNome.text.toString(), binding.etTelefone.text.toString() ) )
+            Toast.makeText( this, "Sucesso!!!", Toast.LENGTH_LONG ).show()
+        } else {
+            banco.update( Cadastro( binding.etCod.text.toString().toInt(), binding.etNome.text.toString(), binding.etTelefone.text.toString() ) )
+            Toast.makeText( this, "Sucesso!!!", Toast.LENGTH_LONG ).show()
         }
-    }
 
-    private fun btIncluirOnClick() {
-        banco.insert(
-            Cadastro(
-                0,
-                binding.etNome.text.toString(),
-                binding.etTelefone.text.toString()
-            )
-        )
-        Toast.makeText(this, "Sucesso!!!", Toast.LENGTH_LONG).show()
-    }
-
-    private fun btAlterarOnClick() {
-        banco.update(
-            Cadastro(
-                binding.etCod.text.toString().toInt(),
-                binding.etNome.text.toString(),
-                binding.etTelefone.text.toString()
-            )
-        )
-        Toast.makeText(this, "Sucesso!!!", Toast.LENGTH_LONG).show()
+        finish()
     }
 
     private fun btExcluirOnClick() {
-        banco.delete(binding.etCod.text.toString().toInt())
-        Toast.makeText(this, "Sucesso!!!", Toast.LENGTH_LONG).show()
+        banco.delete( binding.etCod.text.toString().toInt() )
+        Toast.makeText( this, "Sucesso!!!", Toast.LENGTH_LONG ).show()
+        finish()
     }
 
     private fun btPesquisarOnClick() {
-        val registro = banco.find(binding.etCod.text.toString().toInt())
+        val builder = AlertDialog.Builder( this )
 
-        if (registro != null) {
-            binding.etNome.setText(registro.nome)
-            binding.etTelefone.setText(registro.telefone)
-        } else {
-            Toast.makeText(this, "Registro não encontrado", Toast.LENGTH_LONG).show()
+        val etCodPesquisar = EditText( this )
+        builder.setTitle( "Digite o código da pesquisa" )
+        builder.setView( etCodPesquisar )
+        builder.setCancelable( false )
+        builder.setNegativeButton( "Fechar", null )
+        builder.setPositiveButton( "Pesquisar", DialogInterface.OnClickListener { dialogInterface, i ->
+
+            val banco = Firebase.firestore
+            banco.collection( "cadastro" )
+                .whereEqualTo( "_id", etCodPesquisar.text.toString().toInt() )
+                .get()
+                .addOnSuccessListener { result ->
+                    val registro = result.documents.get(0)
+                    binding.etCod.setText( etCodPesquisar.text.toString() )
+                    binding.etNome.setText( registro.data?.get( "nome" ).toString() )
+                    binding.etTelefone.setText( registro.data?.get( "telefone" ).toString() )
+                }
+                .addOnFailureListener { e ->
+                    println( "Erro${e.message}")
+                }
         }
+        )
+        builder.show();
     }
 
     private fun btPListarOnClick() {
-        /*
-        val registro = banco.list()
-
-        var saida = StringBuilder()
-
-        registro.forEach {
-            saida.append(it._id)
-            saida.append("-")
-            saida.append(it.nome)
-            saida.append("-")
-            saida.append(it.telefone)
-            saida.append("\n")
-        }
-
-        Toast.makeText( this, saida.toString(), Toast.LENGTH_LONG ).show()*/
         val intent = Intent( this, ListActivity::class.java )
         startActivity( intent )
     }
 
     override fun onStart() {
         super.onStart()
-        println( "onStart() executed" )
+        System.out.println( "onStart() executado" )
     }
 
     override fun onResume() {
         super.onResume()
-        println( "onResume() executed" )
+        System.out.println( "onResume() executado" )
     }
 
     override fun onPause() {
         super.onPause()
-        println( "onPause() executed" )
+        System.out.println( "onPause() executado" )
     }
 
     override fun onStop() {
         super.onStop()
-        println( "onStop() executed" )
+        System.out.println( "onStop() executado" )
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        println( "onDestroy() executed" )
+        System.out.println( "onDestroy() executado" )
     }
 
     override fun onRestart() {
         super.onRestart()
-        println( "onDestroy() executed" )
+        System.out.println( "onDestroy() executado" )
     }
 
 }

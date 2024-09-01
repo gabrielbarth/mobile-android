@@ -78,24 +78,14 @@
         app:layout_constraintTop_toBottomOf="@+id/etNome" />
 
     <Button
-        android:id="@+id/btIncluir"
+        android:id="@+id/btSalvar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="@string/incluir"
+        android:text="Salvar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etTelefone" />
-
-    <Button
-        android:id="@+id/btAlterar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/alterar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btIncluir" />
 
     <Button
         android:id="@+id/btExcluir"
@@ -105,7 +95,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/excluir"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btAlterar" />
+        app:layout_constraintTop_toBottomOf="@+id/btSalvar" />
 
     <Button
         android:id="@+id/btPesquisar"
@@ -117,13 +107,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btExcluir" />
 
-    <Button
-        android:id="@+id/btListar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/listar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btPesquisar" />
 </androidx.constraintlayout.widget.ConstraintLayout>
