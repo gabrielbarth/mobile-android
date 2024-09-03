@@ -29,16 +29,23 @@
 <!--           />-->
 <!--    </RadioGroup>-->
 
-    <CheckBox
-        android:id="@+id/cbMasculino"
-        android:text="Masculino"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+<!--    <CheckBox-->
+<!--        android:id="@+id/cbMasculino"-->
+<!--        android:text="Masculino"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content" />-->
 
-    <CheckBox
-        android:id="@+id/cbFeminino"
-        android:text="Feminino"
-        style="?android:attr/starStyle"
+<!--    <CheckBox-->
+<!--        android:id="@+id/cbFeminino"-->
+<!--        android:text="Feminino"-->
+<!--        style="?android:attr/starStyle"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content" />-->
+
+    <DatePicker
+        android:id="@+id/dpNasc"
+        android:datePickerMode="spinner"
+        android:calendarViewShown="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
