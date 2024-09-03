@@ -42,12 +42,17 @@
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content" />-->
 
-    <DatePicker
-        android:id="@+id/dpNasc"
-        android:datePickerMode="spinner"
-        android:calendarViewShown="false"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+<!--    <DatePicker-->
+<!--        android:id="@+id/dpNasc"-->
+<!--        android:datePickerMode="spinner"-->
+<!--        android:calendarViewShown="false"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content" />-->
+
+    <AutoCompleteTextView
+        android:id="@+id/etCidade"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <Button
         android:layout_width="wrap_content"

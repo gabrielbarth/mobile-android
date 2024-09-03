@@ -4,6 +4,8 @@ import android.app.DatePickerDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.LinearLayout
@@ -22,7 +24,9 @@ class MainActivity : AppCompatActivity() {
 //    private lateinit var cbMasculino : CheckBox
 //    private lateinit var cbFeminino : CheckBox
 
-    private lateinit var dpNasc: DatePicker
+//    private lateinit var dpNasc: DatePicker
+
+    private lateinit var etCidade : AutoCompleteTextView
 
     private lateinit var main: LinearLayout
 
@@ -37,13 +41,19 @@ class MainActivity : AppCompatActivity() {
 //        cbMasculino = findViewById(R.id.cbMasculino)
 //        cbFeminino = findViewById(R.id.cbFeminino)
 
-        dpNasc = findViewById(R.id.dpNasc)
+//        dpNasc = findViewById(R.id.dpNasc)
+
+        etCidade = findViewById(R.id.etCidade)
 
         main = findViewById(R.id.main)
 
 //        cbFeminino.setOnCheckedChangeListener {_, checkedId ->
 //           Snackbar.make(main, "Feminino selecionado", Snackbar.LENGTH_SHORT).show()
 //        }
+
+        val cities: List<String> = listOf<String>("Pato Branco", "Coronel vivida", "Marmeleiro",  "Mariopolis", "Marechal" )
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, cities)
+        etCidade.setAdapter(adapter)
     }
 
     fun btTestComponentOnClick(view: View) {
