@@ -2,8 +2,11 @@ package com.gabrielbarth.visualcomponents
 
 import android.app.DatePickerDialog
 import android.graphics.Color
+import android.icu.text.Transliterator.Position
 import android.os.Bundle
 import android.view.View
+import android.view.ViewParent
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.CheckBox
@@ -11,6 +14,7 @@ import android.widget.DatePicker
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
@@ -26,7 +30,9 @@ class MainActivity : AppCompatActivity() {
 
 //    private lateinit var dpNasc: DatePicker
 
-    private lateinit var etCidade : AutoCompleteTextView
+//    private lateinit var etCidade : AutoCompleteTextView
+
+    private lateinit var spCidade : Spinner
 
     private lateinit var main: LinearLayout
 
@@ -43,7 +49,9 @@ class MainActivity : AppCompatActivity() {
 
 //        dpNasc = findViewById(R.id.dpNasc)
 
-        etCidade = findViewById(R.id.etCidade)
+//        etCidade = findViewById(R.id.etCidade)
+
+        spCidade = findViewById(R.id.spCidade)
 
         main = findViewById(R.id.main)
 
@@ -53,7 +61,23 @@ class MainActivity : AppCompatActivity() {
 
         val cities: List<String> = listOf<String>("Pato Branco", "Coronel vivida", "Marmeleiro",  "Mariopolis", "Marechal" )
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, cities)
-        etCidade.setAdapter(adapter)
+//        etCidade.setAdapter(adapter)
+        spCidade.setAdapter(adapter)
+
+        spCidade.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+                Toast.makeText(baseContext, spCidade.selectedItem.toString(), Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
     }
 
     fun btTestComponentOnClick(view: View) {
@@ -73,14 +97,17 @@ class MainActivity : AppCompatActivity() {
 //        Snackbar.make(main, dateFormatted, Snackbar.LENGTH_SHORT).show()
 
         // dpNasc em modal
-        val dateDialog = DatePickerDialog(
-            this,
-            {_, selectedYear, selectedMonth, selectedDay ->
-                val dateFormatted = "${selectedDay}/${selectedMonth + 1}/${selectedYear}"
-                Snackbar.make(main, dateFormatted, Snackbar.LENGTH_SHORT).show()
-            },
-            2024, 7, 25
-        )
-        dateDialog.show()
+//        val dateDialog = DatePickerDialog(
+//            this,
+//            {_, selectedYear, selectedMonth, selectedDay ->
+//                val dateFormatted = "${selectedDay}/${selectedMonth + 1}/${selectedYear}"
+//                Snackbar.make(main, dateFormatted, Snackbar.LENGTH_SHORT).show()
+//            },
+//            2024, 7, 25
+//        )
+//        dateDialog.show()
+
+        Snackbar.make(main, spCidade.selectedItem.toString(), Snackbar.LENGTH_SHORT).show()
+
     }
 }
