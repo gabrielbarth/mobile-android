@@ -54,10 +54,19 @@
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="wrap_content"/>-->
 
-    <Spinner
-        android:id="@+id/spCidade"
+<!--    <Spinner-->
+<!--        android:id="@+id/spCidade"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content" />-->
+
+    <ProgressBar
+        android:id="@+id/barra"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:progress="50"
+        android:max="100"
+        android:layout_gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <Button
         android:layout_width="wrap_content"

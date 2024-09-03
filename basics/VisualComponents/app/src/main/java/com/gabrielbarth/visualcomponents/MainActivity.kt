@@ -12,6 +12,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Spinner
@@ -32,7 +33,9 @@ class MainActivity : AppCompatActivity() {
 
 //    private lateinit var etCidade : AutoCompleteTextView
 
-    private lateinit var spCidade : Spinner
+//    private lateinit var spCidade : Spinner
+
+    private lateinit var barra: ProgressBar
 
     private lateinit var main: LinearLayout
 
@@ -51,7 +54,9 @@ class MainActivity : AppCompatActivity() {
 
 //        etCidade = findViewById(R.id.etCidade)
 
-        spCidade = findViewById(R.id.spCidade)
+//        spCidade = findViewById(R.id.spCidade)
+
+        barra = findViewById(R.id.barra)
 
         main = findViewById(R.id.main)
 
@@ -59,25 +64,24 @@ class MainActivity : AppCompatActivity() {
 //           Snackbar.make(main, "Feminino selecionado", Snackbar.LENGTH_SHORT).show()
 //        }
 
-        val cities: List<String> = listOf<String>("Pato Branco", "Coronel vivida", "Marmeleiro",  "Mariopolis", "Marechal" )
+        // spinner ou auto complete
+        val cities: List<String> =
+            listOf<String>("Pato Branco", "Coronel vivida", "Marmeleiro", "Mariopolis", "Marechal")
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, cities)
 //        etCidade.setAdapter(adapter)
-        spCidade.setAdapter(adapter)
-
-        spCidade.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
-                Toast.makeText(baseContext, spCidade.selectedItem.toString(), Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-        }
+//        spCidade.setAdapter(adapter)
+//
+//        spCidade.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+//            override fun onItemSelected(
+//                parent: AdapterView<*>?,
+//                view: View,
+//                position: Int,
+//                id: Long
+//            ) {
+//                Toast.makeText(baseContext, spCidade.selectedItem.toString(), Toast.LENGTH_SHORT).show()
+//            }
+//            override fun onNothingSelected(parent: AdapterView<*>?) {}
+//        }
     }
 
     fun btTestComponentOnClick(view: View) {
@@ -107,7 +111,16 @@ class MainActivity : AppCompatActivity() {
 //        )
 //        dateDialog.show()
 
-        Snackbar.make(main, spCidade.selectedItem.toString(), Snackbar.LENGTH_SHORT).show()
+
+        // Snackbar.make(main, spCidade.selectedItem.toString(), Snackbar.LENGTH_SHORT).show()
+
+        Thread {
+            for (i in 0..100) {
+                barra.progress = i
+                Thread.sleep(100)
+            }
+        }.start()
+
 
     }
 }
