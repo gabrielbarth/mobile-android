@@ -1,4 +1,4 @@
-package com.gabrielbarth.contacts.ui.utils
+package com.gabrielbarth.contacts.utils
 
 import java.math.BigDecimal
 import java.text.DecimalFormat
