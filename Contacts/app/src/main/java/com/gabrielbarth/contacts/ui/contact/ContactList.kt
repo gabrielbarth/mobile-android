@@ -1,7 +1,10 @@
 package com.gabrielbarth.contacts.ui.contact
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -51,6 +54,7 @@ import kotlin.random.Random
 
 import com.gabrielbarth.contacts.R
 import com.gabrielbarth.contacts.data.Contact
+import com.gabrielbarth.contacts.data.groupByInitial
 import com.gabrielbarth.contacts.ui.theme.ContactsTheme
 import com.gabrielbarth.contacts.ui.utils.composables.ContactAvatar
 
@@ -62,7 +66,7 @@ fun ContactListScreen(
     val isInitialComposition: MutableState<Boolean> = rememberSaveable { mutableStateOf(true) }
     val isLoading: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
     val hasError: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
-    val contacts: MutableState<List<Contact>> = remember { mutableStateOf(listOf()) }
+    val contacts: MutableState<Map<String, List<Contact>>> = remember { mutableStateOf(mapOf()) }
     val loadContacts: () -> Unit = {
         isLoading.value = true
         hasError.value = false
@@ -72,9 +76,9 @@ fun ContactListScreen(
             if (!hasError.value) {
                 val isEmpty = Random.nextBoolean()
                 if (isEmpty) {
-                    contacts.value = listOf()
+                    contacts.value = mapOf()
                 } else {
-                    contacts.value = generateContacts()
+                    contacts.value = generateContacts().groupByInitial()
                 }
             }
             isLoading.value = false
@@ -82,13 +86,17 @@ fun ContactListScreen(
     }
 
     val toggleFavorite: (Contact) -> Unit = { contact ->
-        contacts.value = contacts.value.map {
-            if (it.id == contact.id) {
-                it.copy(isFavorite = !it.isFavorite)
-            } else {
-                it
+        val newMap: MutableMap<String, List<Contact>> = mutableMapOf()
+        contacts.value.keys.forEach { key ->
+            newMap[key] = contacts.value[key]!!.map {
+                if (it.id == contact.id) {
+                    it.copy(isFavorite = !it.isFavorite)
+                } else {
+                    it
+                }
             }
         }
+        contacts.value = newMap.toMap()
     }
 
     if (isInitialComposition.value) {
@@ -113,11 +121,7 @@ fun ContactListScreen(
                 )
             },
             floatingActionButton = {
-                ExtendedFloatingActionButton(onClick = {
-                    contacts.value = contacts.value.plus(
-                        Contact(firstName = "Teste", lastName = "Teste")
-                    )
-                }) {
+                ExtendedFloatingActionButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Filled.Add,
                         contentDescription = "Adicionar"
@@ -294,20 +298,39 @@ private fun EmptyListPreview() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun List(
     modifier: Modifier = Modifier,
-    contacts: List<Contact>,
+    contacts: Map<String, List<Contact>>,
     onFavoritePressed: (Contact) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
     ) {
-        items(contacts) { contact ->
-            ContactListItem(
-                contact = contact,
-                onFavoritePressed = onFavoritePressed
-            )
+        contacts.forEach { (initial, contacts) ->
+            stickyHeader {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    Text(
+                        text = initial,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .padding(start = 16.dp),
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            }
+            items(contacts) { contact ->
+                ContactListItem(
+                    contact = contact,
+                    onFavoritePressed = onFavoritePressed
+                )
+            }
         }
     }
 }
@@ -356,7 +379,7 @@ private fun ContactListItem(
 private fun ListPreview() {
     ContactsTheme {
         List(
-            contacts = generateContacts(),
+            contacts = generateContacts().groupByInitial(),
             onFavoritePressed = {}
         )
     }
