@@ -1,7 +1,6 @@
 package com.gabrielbarth.contacts.ui.contact.form
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +13,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
@@ -61,9 +61,9 @@ import com.gabrielbarth.contacts.ui.utils.composables.ContactAvatar
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultErrorContent
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultLoadingContent
 import com.gabrielbarth.contacts.utils.format
+import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.ZoneOffset
 
 @Composable
@@ -118,13 +118,15 @@ fun ContactFormScreen(
                 isFavorite = viewModel.uiState.isFavorite,
                 birthDate = viewModel.uiState.birthDate,
                 type = viewModel.uiState.type,
+                patrimony = viewModel.uiState.patrimony,
                 onFirstNameChanged = viewModel::onFirstNameChanged,
                 onLastNameChanged = viewModel::onLastNameChanged,
                 onPhoneChanged = viewModel::onPhoneChanged,
                 onEmailChanged = viewModel::onEmailChanged,
                 onTypeChanged = viewModel::onTypeChanged,
                 onIsFavoriteChanged = viewModel::onIsFavoriteChanged,
-                onBirthDateChanged = viewModel::onBirthDateChanged
+                onBirthDateChanged = viewModel::onBirthDateChanged,
+                onPatrimonyChanged = viewModel::onPatrimonyChanged,
             )
         }
     }
@@ -442,13 +444,15 @@ private fun FormContent(
     isFavorite: FormField<Boolean>,
     birthDate: FormField<LocalDate>,
     type: FormField<ContactTypeEnum>,
+    patrimony: FormField<String>,
     onFirstNameChanged: (String) -> Unit,
     onLastNameChanged: (String) -> Unit,
     onPhoneChanged: (String) -> Unit,
     onEmailChanged: (String) -> Unit,
     onIsFavoriteChanged: (Boolean) -> Unit,
     onBirthDateChanged: (LocalDate) -> Unit,
-    onTypeChanged: (ContactTypeEnum) -> Unit
+    onTypeChanged: (ContactTypeEnum) -> Unit,
+    onPatrimonyChanged: (String) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -533,6 +537,22 @@ private fun FormContent(
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
+                imageVector = Icons.Filled.AttachMoney,
+                contentDescription = stringResource(R.string.patrimony),
+                tint = MaterialTheme.colorScheme.outline
+            )
+            FormTextField(
+                modifier = formTextFieldModifier,
+                label = stringResource(R.string.patrimony),
+                value = patrimony.value,
+                errorMessageCode = patrimony.errorMessageCode,
+                onValueChanged = onPatrimonyChanged,
+                keyboardType = KeyboardType.Number,
+                enabled = !isSaving
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
                 imageVector = Icons.Filled.CalendarMonth,
                 contentDescription = stringResource(R.string.birth_date),
                 tint = MaterialTheme.colorScheme.background
@@ -608,13 +628,15 @@ private fun FormContentPreview() {
             isFavorite = FormField(value = false),
             birthDate = FormField(value = LocalDate.now()),
             type = FormField(value = ContactTypeEnum.PERSONAL),
+            patrimony = FormField(value = ""),
             onFirstNameChanged = {},
             onLastNameChanged = {},
             onPhoneChanged = {},
             onEmailChanged = {},
             onTypeChanged = {},
             onIsFavoriteChanged = {},
-            onBirthDateChanged = {}
+            onBirthDateChanged = {},
+            onPatrimonyChanged = {}
         )
     }
 }

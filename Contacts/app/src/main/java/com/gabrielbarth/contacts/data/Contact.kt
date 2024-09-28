@@ -1,5 +1,6 @@
 package com.gabrielbarth.contacts.data
 
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -12,7 +13,8 @@ data class Contact(
     val isFavorite: Boolean = false,
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val birthDate: LocalDate = LocalDate.now(),
-    val type: ContactTypeEnum = ContactTypeEnum.PERSONAL
+    val type: ContactTypeEnum = ContactTypeEnum.PERSONAL,
+    val patrimony: BigDecimal = BigDecimal.ZERO
 ) {
     val fullName get(): String = "$firstName $lastName".trim()
 }

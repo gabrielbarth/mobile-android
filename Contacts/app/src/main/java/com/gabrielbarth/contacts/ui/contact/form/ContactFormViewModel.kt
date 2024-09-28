@@ -12,6 +12,7 @@ import com.gabrielbarth.contacts.data.ContactTypeEnum
 import com.gabrielbarth.contacts.ui.Arguments
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import java.time.LocalDate
 import kotlin.random.Random
 
@@ -164,6 +165,27 @@ class ContactFormViewModel(
         }
     }
 
+    fun onPatrimonyChanged(newPatrimony: String) {
+        if (uiState.patrimony.value != newPatrimony) {
+            uiState = uiState.copy(
+                patrimony = uiState.patrimony.copy(
+                    value = newPatrimony,
+                    errorMessageCode = validatePatrimonio(newPatrimony)
+                )
+            )
+        }
+    }
+
+    private fun validatePatrimonio(patrimonio: String): Int {
+        if (patrimonio.isBlank()) return 0
+        return try {
+            BigDecimal(patrimonio)
+            0
+        } catch (_: NumberFormatException) {
+            R.string.invalid_patrimony
+        }
+    }
+
     private fun isValidForm(): Boolean {
         uiState = uiState.copy(
             firstName = uiState.firstName.copy(
@@ -174,6 +196,9 @@ class ContactFormViewModel(
             ),
             email = uiState.email.copy(
                 errorMessageCode = validateEmail(uiState.email.value)
+            ),
+            patrimony = uiState.patrimony.copy(
+                errorMessageCode = validatePatrimonio(uiState.patrimony.value)
             )
         )
         return uiState.isValidForm
@@ -196,7 +221,12 @@ class ContactFormViewModel(
                         email = uiState.email.value,
                         isFavorite = uiState.isFavorite.value,
                         type = uiState.type.value,
-                        birthDate = uiState.birthDate.value
+                        birthDate = uiState.birthDate.value,
+                        patrimony = if (uiState.patrimony.value.isBlank()) {
+                            BigDecimal.ZERO
+                        } else {
+                            BigDecimal(uiState.patrimony.value)
+                        }
                     )
                     ContactDatasource.instance.save(contactToSave)
                     uiState.copy(
