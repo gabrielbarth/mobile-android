@@ -7,16 +7,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gabrielbarth.contacts.data.Contact
 import com.gabrielbarth.contacts.data.ContactDatasource
+import com.gabrielbarth.contacts.data.ContactsObserver
 import com.gabrielbarth.contacts.data.groupByInitial
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class ContactsListViewModel : ViewModel() {
+class ContactsListViewModel : ViewModel(), ContactsObserver {
     var uiState: ContactsListUiState by mutableStateOf(ContactsListUiState())
         private set
 
     init {
+        ContactDatasource.instance.registerObserver(this)
         loadContacts()
+    }
+
+    override fun onCleared() {
+        ContactDatasource.instance.unregisterObserver(this)
+        super.onCleared()
     }
 
     fun loadContacts() {
@@ -25,7 +32,7 @@ class ContactsListViewModel : ViewModel() {
             hasError = false
         )
         viewModelScope.launch {
-            delay(2000)
+            delay(1000)
             val contacts: List<Contact> = ContactDatasource.instance.findAll()
             uiState = uiState.copy(
                 contacts = contacts.groupByInitial(),
@@ -37,7 +44,9 @@ class ContactsListViewModel : ViewModel() {
     fun toggleFavorite(contact: Contact) {
         val updatedContact = contact.copy(isFavorite = !contact.isFavorite)
         ContactDatasource.instance.save(updatedContact)
-        val contacts: List<Contact> = ContactDatasource.instance.findAll()
-        uiState = uiState.copy(contacts = contacts.groupByInitial())
+    }
+
+    override fun onUpdate(updatedContacts: List<Contact>) {
+        uiState = uiState.copy(contacts = updatedContacts.groupByInitial())
     }
 }

@@ -87,7 +87,7 @@ fun ContactDetailsScreen(
             hasErrorLoading = false
         )
         coroutineScope.launch {
-            delay(2000)
+            delay(1000)
             val contact = ContactDatasource.instance.findById(contactId)
             uiState = if (contact == null) {
                 uiState.copy(
@@ -130,7 +130,7 @@ fun ContactDetailsScreen(
                     hasErrorDeleting = false
                 )
                 coroutineScope.launch {
-                    delay(2000)
+                    delay(1000)
                     val hasError = Random.nextBoolean()
                     uiState = if (hasError) {
                         uiState.copy(

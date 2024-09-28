@@ -2,7 +2,6 @@ package com.gabrielbarth.contacts.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -73,7 +72,10 @@ fun AppEntryPoint(
                     navController.navigate("${Screens.CONTACT_FORM}?${Arguments.CONTACT_ID}=$contactId")
                 },
                 onContactDeleted = {
-                    navigateToList(navController)
+                    navController.popBackStack(
+                        route = Screens.CONTACTS_LIST,
+                        inclusive = false
+                    )
                 }
             )
         }
@@ -87,19 +89,16 @@ fun AppEntryPoint(
             )
         ) {
             ContactFormScreen(
-                onContactSaved = { navigateToList(navController) },
+                onContactSaved = {
+                    navController.popBackStack(
+                        route = Screens.CONTACTS_LIST,
+                        inclusive = false
+                    )
+                },
                 onBackPressed = {
                     navController.popBackStack()
                 }
             )
-        }
-    }
-}
-
-private fun navigateToList(navController: NavHostController) {
-    navController.navigate(Screens.CONTACTS_LIST) {
-        popUpTo(navController.graph.findStartDestination().id) {
-            inclusive = true
         }
     }
 }
