@@ -16,4 +16,5 @@
     <string name="text">Texto</string>
     <string name="video">Vídeo</string>
     <string name="email">E-mail</string>
+    <string name="loading">Carregando...</string>
 </resources>
