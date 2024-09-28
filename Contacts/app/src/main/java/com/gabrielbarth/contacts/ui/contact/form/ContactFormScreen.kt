@@ -1,17 +1,25 @@
 package com.gabrielbarth.contacts.ui.contact.form
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
@@ -49,6 +57,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gabrielbarth.contacts.R
 import com.gabrielbarth.contacts.data.ContactTypeEnum
 import com.gabrielbarth.contacts.ui.theme.ContactsTheme
+import com.gabrielbarth.contacts.ui.utils.composables.ContactAvatar
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultErrorContent
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultLoadingContent
 import com.gabrielbarth.contacts.utils.format
@@ -94,11 +103,28 @@ fun ContactFormScreen(
                     isNewContact = viewModel.uiState.isNewContact,
                     onBackPressed = onBackPressed,
                     isSaving = viewModel.uiState.isSaving,
-                    onSavePressed = { /*TODO */ }
+                    onSavePressed = viewModel::save
                 )
             }
         ) { paddingValues ->
-            Box(modifier = Modifier.padding(paddingValues))
+            FormContent(
+                modifier = Modifier.padding(paddingValues),
+                isSaving = viewModel.uiState.isSaving,
+                firstName = viewModel.uiState.firstName,
+                lastName = viewModel.uiState.lastName,
+                phone = viewModel.uiState.phone,
+                email = viewModel.uiState.email,
+                isFavorite = viewModel.uiState.isFavorite,
+                birthDate = viewModel.uiState.birthDate,
+                type = viewModel.uiState.type,
+                onFirstNameChanged = viewModel::onFirstNameChanged,
+                onLastNameChanged = viewModel::onLastNameChanged,
+                onPhoneChanged = viewModel::onPhoneChanged,
+                onEmailChanged = viewModel::onEmailChanged,
+                onTypeChanged = viewModel::onTypeChanged,
+                onIsFavoriteChanged = viewModel::onIsFavoriteChanged,
+                onBirthDateChanged = viewModel::onBirthDateChanged
+            )
         }
     }
 }
@@ -393,6 +419,195 @@ private fun FormDatePickerPreview() {
             label = "Data",
             value = LocalDate.now(),
             onValueChanged = {}
+        )
+    }
+}
+
+
+@Composable
+private fun FormContent(
+    modifier: Modifier = Modifier,
+    isSaving: Boolean,
+    firstName: FormField<String>,
+    lastName: FormField<String>,
+    phone: FormField<String>,
+    email: FormField<String>,
+    isFavorite: FormField<Boolean>,
+    birthDate: FormField<LocalDate>,
+    type: FormField<ContactTypeEnum>,
+    onFirstNameChanged: (String) -> Unit,
+    onLastNameChanged: (String) -> Unit,
+    onPhoneChanged: (String) -> Unit,
+    onEmailChanged: (String) -> Unit,
+    onIsFavoriteChanged: (Boolean) -> Unit,
+    onBirthDateChanged: (LocalDate) -> Unit,
+    onTypeChanged: (ContactTypeEnum) -> Unit
+) {
+    Column(
+        modifier = modifier
+            .padding(16.dp)
+            .imePadding()
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val formTextFieldModifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+        ContactAvatar(
+            modifier = Modifier.padding(16.dp),
+            firstName = firstName.value,
+            lastName = lastName.value,
+            size = 150.dp,
+            textStyle = MaterialTheme.typography.displayLarge
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Filled.Person,
+                contentDescription = stringResource(R.string.name),
+                tint = MaterialTheme.colorScheme.outline
+            )
+            FormTextField(
+                modifier = formTextFieldModifier,
+                label = stringResource(R.string.name),
+                value = firstName.value,
+                errorMessageCode = firstName.errorMessageCode,
+                onValueChanged = onFirstNameChanged,
+                keyboardCapitalization = KeyboardCapitalization.Words,
+                enabled = !isSaving
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Filled.Person,
+                contentDescription = stringResource(R.string.lastName),
+                tint = MaterialTheme.colorScheme.background
+            )
+            FormTextField(
+                modifier = formTextFieldModifier,
+                label = stringResource(R.string.lastName),
+                value = lastName.value,
+                errorMessageCode = lastName.errorMessageCode,
+                onValueChanged = onLastNameChanged,
+                keyboardCapitalization = KeyboardCapitalization.Words,
+                enabled = !isSaving
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Filled.Phone,
+                contentDescription = stringResource(R.string.phone),
+                tint = MaterialTheme.colorScheme.outline
+            )
+            FormTextField(
+                modifier = formTextFieldModifier,
+                label = stringResource(R.string.phone),
+                value = phone.value,
+                errorMessageCode = phone.errorMessageCode,
+                onValueChanged = onPhoneChanged,
+                keyboardType = KeyboardType.Phone,
+                enabled = !isSaving
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Filled.Mail,
+                contentDescription = stringResource(R.string.email),
+                tint = MaterialTheme.colorScheme.outline
+            )
+            FormTextField(
+                modifier = formTextFieldModifier,
+                label = stringResource(R.string.email),
+                value = email.value,
+                errorMessageCode = email.errorMessageCode,
+                onValueChanged = onEmailChanged,
+                keyboardType = KeyboardType.Email,
+                enabled = !isSaving
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                imageVector = Icons.Filled.CalendarMonth,
+                contentDescription = stringResource(R.string.birth_date),
+                tint = MaterialTheme.colorScheme.background
+            )
+            FormDatePicker(
+                modifier = formTextFieldModifier,
+                label = stringResource(R.string.birth_date),
+                value = birthDate.value,
+                errorMessageCode = birthDate.errorMessageCode,
+                onValueChanged = onBirthDateChanged,
+                enabled = !isSaving
+            )
+        }
+        val checkOptionsModifier = Modifier.padding(vertical = 8.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Icon(
+                imageVector = Icons.Filled.CalendarMonth,
+                contentDescription = stringResource(R.string.birth_date),
+                tint = MaterialTheme.colorScheme.background
+            )
+            FormCheckbox(
+                modifier = checkOptionsModifier,
+                label = stringResource(R.string.favorite_contact),
+                checked = isFavorite.value,
+                onCheckChanged = onIsFavoriteChanged,
+                enabled = !isSaving
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Icon(
+                imageVector = Icons.Filled.CalendarMonth,
+                contentDescription = stringResource(R.string.birth_date),
+                tint = MaterialTheme.colorScheme.background
+            )
+            FormRadioButton(
+                modifier = checkOptionsModifier,
+                label = stringResource(R.string.personal_contact),
+                value = ContactTypeEnum.PERSONAL,
+                groupValue = type.value,
+                onValueChanged = onTypeChanged,
+                enabled = !isSaving
+            )
+            FormRadioButton(
+                modifier = checkOptionsModifier,
+                label = stringResource(R.string.professional_contact),
+                value = ContactTypeEnum.PROFESSIONAL,
+                groupValue = type.value,
+                onValueChanged = onTypeChanged,
+                enabled = !isSaving
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FormContentPreview() {
+    ContactsTheme {
+        FormContent(
+            isSaving = false,
+            firstName = FormField(value = "Gabriel"),
+            lastName = FormField(value = "Barth"),
+            phone = FormField(value = "6799998888"),
+            email = FormField(value = ""),
+            isFavorite = FormField(value = false),
+            birthDate = FormField(value = LocalDate.now()),
+            type = FormField(value = ContactTypeEnum.PERSONAL),
+            onFirstNameChanged = {},
+            onLastNameChanged = {},
+            onPhoneChanged = {},
+            onEmailChanged = {},
+            onTypeChanged = {},
+            onIsFavoriteChanged = {},
+            onBirthDateChanged = {}
         )
     }
 }
