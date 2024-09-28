@@ -17,4 +17,7 @@
     <string name="video">Vídeo</string>
     <string name="email">E-mail</string>
     <string name="loading">Carregando...</string>
+    <string name="confirm">Confirmar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="remove_confirm">Esse contato será removido permanemtente.</string>
 </resources>
