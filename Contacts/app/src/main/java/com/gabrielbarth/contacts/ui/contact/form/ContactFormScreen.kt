@@ -41,6 +41,7 @@ import com.gabrielbarth.contacts.R
 import com.gabrielbarth.contacts.ui.theme.ContactsTheme
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultErrorContent
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultLoadingContent
+
 @Composable
 fun ContactFormScreen(
     modifier: Modifier = Modifier,
@@ -87,6 +88,7 @@ fun ContactFormScreen(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AppBar(
@@ -132,6 +134,7 @@ private fun AppBar(
         }
     )
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun AppBarPreview() {
@@ -144,6 +147,7 @@ private fun AppBarPreview() {
         )
     }
 }
+
 @Composable
 private fun FormTextField(
     modifier: Modifier = Modifier,
@@ -184,6 +188,7 @@ private fun FormTextField(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun FormTextFieldPreview() {
@@ -196,6 +201,7 @@ private fun FormTextFieldPreview() {
         )
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun FormTextFieldErrorPreview() {
@@ -209,6 +215,7 @@ private fun FormTextFieldErrorPreview() {
         )
     }
 }
+
 @Composable
 private fun FormCheckbox(
     modifier: Modifier = Modifier,
@@ -229,6 +236,7 @@ private fun FormCheckbox(
         Text(label)
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun FormCheckboxPreview() {
@@ -241,6 +249,7 @@ private fun FormCheckboxPreview() {
         )
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun FormCheckboxCheckedPreview() {
