@@ -10,11 +10,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gabrielbarth.contacts.ui.contact.details.ContactDetailsScreen
+import com.gabrielbarth.contacts.ui.contact.form.ContactFormScreen
 import com.gabrielbarth.contacts.ui.contact.list.ContactListScreen
 
 private object Screens {
     const val CONTACTS_LIST = "contactList"
     const val CONTACT_DETAILS = "contactDetails"
+    const val CONTACT_FORM = "contactForm"
 }
 
 object Arguments {
@@ -23,7 +25,13 @@ object Arguments {
 
 private object Routes {
     const val CONTACTS_LIST = Screens.CONTACTS_LIST
+
+    // contactDetails/{contactId}
     const val CONTACT_DETAILS = "${Screens.CONTACT_DETAILS}/{${Arguments.CONTACT_ID}}"
+
+    // contactForm?contactId={contactId}
+    const val CONTACT_FORM =
+        "${Screens.CONTACT_FORM}?${Arguments.CONTACT_ID}={${Arguments.CONTACT_ID}}"
 }
 
 @Composable
@@ -39,7 +47,9 @@ fun AppEntryPoint(
     ) {
         composable(route = Routes.CONTACTS_LIST) {
             ContactListScreen(
-                onAddPressed = {},
+                onAddPressed = {
+                    navController.navigate(Screens.CONTACT_FORM)
+                },
                 onContactPressed = { contact ->
                     navController.navigate("${Screens.CONTACT_DETAILS}/${contact.id}")
                 }
@@ -59,9 +69,27 @@ fun AppEntryPoint(
                 onBackPressed = {
                     navController.popBackStack()
                 },
-                onEditPressed = {},
+                onEditPressed = {
+                    navController.navigate("${Screens.CONTACT_FORM}?${Arguments.CONTACT_ID}=$contactId")
+                },
                 onContactDeleted = {
                     navigateToList(navController)
+                }
+            )
+        }
+        composable(
+            route = Routes.CONTACT_FORM,
+            arguments = listOf(
+                navArgument(name = Arguments.CONTACT_ID) {
+                    type = NavType.StringType
+                    nullable = true
+                }
+            )
+        ) {
+            ContactFormScreen(
+                onContactSaved = { navigateToList(navController) },
+                onBackPressed = {
+                    navController.popBackStack()
                 }
             )
         }
