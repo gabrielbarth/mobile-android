@@ -52,6 +52,7 @@ import kotlin.random.Random
 import com.gabrielbarth.contacts.R
 import com.gabrielbarth.contacts.data.Contact
 import com.gabrielbarth.contacts.ui.theme.ContactsTheme
+import com.gabrielbarth.contacts.ui.utils.composables.ContactAvatar
 
 @Composable
 fun ContactListScreen(
@@ -323,7 +324,12 @@ private fun ContactListItem(
     ListItem(
         modifier = modifier,
         headlineContent = { Text(contact.fullName) },
-        leadingContent = {},
+        leadingContent = {
+            ContactAvatar(
+                firstName = contact.firstName,
+                lastName = contact.lastName
+            )
+        },
         trailingContent = {
             IconButton(onClick = { onFavoritePressed(contact) }) {
                 Icon(
