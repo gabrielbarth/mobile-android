@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.gabrielbarth.contacts.ui.contact.ContactListScreen
+import com.gabrielbarth.contacts.ui.contact.list.ContactListScreen
 import com.gabrielbarth.contacts.ui.theme.ContactsTheme
 
 class MainActivity : ComponentActivity() {
