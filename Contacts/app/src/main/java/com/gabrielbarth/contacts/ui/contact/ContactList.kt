@@ -41,7 +41,7 @@ import com.gabrielbarth.contacts.ui.theme.ContactsTheme
 import kotlin.random.Random
 
 @Composable
-fun ContactsListScreen(modifier: Modifier = Modifier) {
+fun ContactListScreen(modifier: Modifier = Modifier) {
     var isLoading = true
     var hasError = false
     var contacts = listOf<Contact>()
