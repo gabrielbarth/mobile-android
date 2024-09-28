@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CloudOff
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
@@ -27,15 +25,14 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -43,7 +40,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -56,6 +52,7 @@ import com.gabrielbarth.contacts.data.generateContacts
 import com.gabrielbarth.contacts.data.groupByInitial
 import com.gabrielbarth.contacts.ui.theme.ContactsTheme
 import com.gabrielbarth.contacts.ui.utils.composables.ContactAvatar
+import com.gabrielbarth.contacts.ui.utils.composables.FavoriteIconButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -345,21 +342,10 @@ private fun ContactListItem(
             )
         },
         trailingContent = {
-            IconButton(onClick = { onFavoritePressed(contact) }) {
-                Icon(
-                    imageVector = if (contact.isFavorite) {
-                        Icons.Filled.Favorite
-                    } else {
-                        Icons.Filled.FavoriteBorder
-                    },
-                    contentDescription = "Favoritar",
-                    tint = if (contact.isFavorite) {
-                        Color.Red
-                    } else {
-                        LocalContentColor.current
-                    }
-                )
-            }
+            FavoriteIconButton(
+                isFavorite = contact.isFavorite,
+                onPressed = { onFavoritePressed(contact) }
+            )
         }
     )
 }
