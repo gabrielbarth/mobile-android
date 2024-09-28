@@ -11,21 +11,30 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -38,9 +47,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gabrielbarth.contacts.R
+import com.gabrielbarth.contacts.data.ContactTypeEnum
 import com.gabrielbarth.contacts.ui.theme.ContactsTheme
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultErrorContent
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultLoadingContent
+import com.gabrielbarth.contacts.utils.format
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 @Composable
 fun ContactFormScreen(
@@ -155,11 +169,13 @@ private fun FormTextField(
     onValueChanged: (String) -> Unit,
     label: String,
     enabled: Boolean = true,
+    readOnly: Boolean = false,
     errorMessageCode: Int = 0,
     keyboardCapitalization: KeyboardCapitalization = KeyboardCapitalization.Unspecified,
     keyboardImeAction: ImeAction = ImeAction.Next,
     keyboardType: KeyboardType = KeyboardType.Text,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
     val hasError = errorMessageCode > 0
     Column(modifier = modifier) {
@@ -170,13 +186,15 @@ private fun FormTextField(
             label = { Text(label) },
             maxLines = 1,
             enabled = enabled,
+            readOnly = readOnly,
             isError = hasError,
             keyboardOptions = KeyboardOptions(
                 capitalization = keyboardCapitalization,
                 imeAction = keyboardImeAction,
                 keyboardType = keyboardType
             ),
-            visualTransformation = visualTransformation
+            visualTransformation = visualTransformation,
+            trailingIcon = trailingIcon
         )
         if (hasError) {
             Text(
@@ -259,6 +277,122 @@ private fun FormCheckboxCheckedPreview() {
             checked = true,
             onCheckChanged = {},
             label = "Favorito"
+        )
+    }
+}
+
+
+@Composable
+fun FormRadioButton(
+    modifier: Modifier = Modifier,
+    value: ContactTypeEnum,
+    groupValue: ContactTypeEnum,
+    onValueChanged: (ContactTypeEnum) -> Unit,
+    enabled: Boolean = true,
+    label: String
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        RadioButton(
+            selected = value == groupValue,
+            onClick = { onValueChanged(value) },
+            enabled = enabled
+        )
+        Text(label)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FormRadioButtonPreview() {
+    ContactsTheme {
+        FormRadioButton(
+            modifier = Modifier.padding(20.dp),
+            value = ContactTypeEnum.PERSONAL,
+            groupValue = ContactTypeEnum.PROFESSIONAL,
+            onValueChanged = {},
+            label = "Pessoal"
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FormRadioButtonSelectedPreview() {
+    ContactsTheme {
+        FormRadioButton(
+            modifier = Modifier.padding(20.dp),
+            value = ContactTypeEnum.PERSONAL,
+            groupValue = ContactTypeEnum.PERSONAL,
+            onValueChanged = {},
+            label = "Pessoal"
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FormDatePicker(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: LocalDate,
+    onValueChanged: (LocalDate) -> Unit,
+    errorMessageCode: Int = 0,
+    enabled: Boolean = true
+) {
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+
+    FormTextField(
+        modifier = modifier,
+        value = value.format(),
+        onValueChanged = {},
+        label = label,
+        readOnly = true,
+        enabled = enabled,
+        errorMessageCode = errorMessageCode,
+        trailingIcon = {
+            IconButton(onClick = { showDatePicker = !showDatePicker }) {
+                Icon(
+                    imageVector = Icons.Default.DateRange,
+                    contentDescription = stringResource(R.string.select_date)
+                )
+            }
+        }
+    )
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = !showDatePicker },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let {
+                        val date = Instant
+                            .ofEpochMilli(it)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                        onValueChanged(date)
+                    }
+                }) {
+                    Text(stringResource(R.string.ok))
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FormDatePickerPreview() {
+    ContactsTheme {
+        FormDatePicker(
+            modifier = Modifier.padding(20.dp),
+            label = "Data",
+            value = LocalDate.now(),
+            onValueChanged = {}
         )
     }
 }
