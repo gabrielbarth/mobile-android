@@ -60,8 +60,8 @@ import com.gabrielbarth.contacts.ui.theme.ContactsTheme
 import com.gabrielbarth.contacts.ui.utils.composables.ContactAvatar
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultErrorContent
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultLoadingContent
+import com.gabrielbarth.contacts.ui.utils.visualtransformation.PhoneVisualTransformation
 import com.gabrielbarth.contacts.utils.format
-import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -516,7 +516,8 @@ private fun FormContent(
                 errorMessageCode = phone.errorMessageCode,
                 onValueChanged = onPhoneChanged,
                 keyboardType = KeyboardType.Phone,
-                enabled = !isSaving
+                enabled = !isSaving,
+                visualTransformation = PhoneVisualTransformation()
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {

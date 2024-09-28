@@ -58,6 +58,7 @@ import com.gabrielbarth.contacts.ui.utils.composables.ContactAvatar
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultErrorContent
 import com.gabrielbarth.contacts.ui.utils.composables.DefaultLoadingContent
 import com.gabrielbarth.contacts.ui.utils.composables.FavoriteIconButton
+import com.gabrielbarth.contacts.utils.toFormattedPhone
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -361,7 +362,7 @@ private fun ContactDetails(
             )
             ContactInfo(
                 imageVector = Icons.Outlined.Phone,
-                value = contact.phoneNumber.ifBlank {
+                value = contact.phoneNumber.toFormattedPhone().ifBlank {
                     "Adicionar número de telefone"
                 },
                 enabled = contact.phoneNumber.isBlank() && !isDeleting,
