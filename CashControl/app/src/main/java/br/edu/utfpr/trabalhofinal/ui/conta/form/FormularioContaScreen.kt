@@ -1,4 +1,5 @@
 package br.edu.utfpr.trabalhofinal.ui.conta.form
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,18 +13,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Notes
-import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -49,6 +51,7 @@ import br.edu.utfpr.trabalhofinal.R
 import br.edu.utfpr.trabalhofinal.ui.theme.TrabalhoFinalTheme
 import br.edu.utfpr.trabalhofinal.ui.utils.composables.Carregando
 import br.edu.utfpr.trabalhofinal.ui.utils.composables.ErroAoCarregar
+
 @Composable
 fun FormularioContaScreen(
     modifier: Modifier = Modifier,
@@ -167,11 +170,13 @@ private fun AppBar(
     TopAppBar(
         modifier = modifier.fillMaxWidth(),
         title = {
-            Text(if (contaNova) {
-                stringResource(R.string.nova_conta)
-            } else {
-                stringResource(R.string.editar_conta)
-            })
+            Text(
+                if (contaNova) {
+                    stringResource(R.string.nova_conta)
+                } else {
+                    stringResource(R.string.editar_conta)
+                }
+            )
         },
         navigationIcon = {
             IconButton(onClick = onVoltarPressed) {
@@ -214,6 +219,7 @@ private fun AppBar(
         )
     )
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun AppBarPreview() {
@@ -227,6 +233,7 @@ private fun AppBarPreview() {
         )
     }
 }
+
 @Composable
 private fun FormContent(
     modifier: Modifier = Modifier,
@@ -269,22 +276,6 @@ private fun FormContent(
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                imageVector = Icons.Filled.CalendarMonth,
-                contentDescription = stringResource(R.string.data),
-                tint = MaterialTheme.colorScheme.outline
-            )
-            FormTextField(
-                modifier = formTextFieldModifier,
-                titulo = stringResource(R.string.data),
-                campoFormulario = data,
-                onValorAlterado = onDataAlterada,
-                keyboardType = KeyboardType.Number,
-                keyboardCapitalization = KeyboardCapitalization.Words,
-                enabled = !processando
-            )
-        }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
                 imageVector = Icons.Filled.AttachMoney,
                 contentDescription = stringResource(R.string.valor),
                 tint = MaterialTheme.colorScheme.outline
@@ -298,35 +289,66 @@ private fun FormContent(
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Filled.Check,
-                contentDescription = stringResource(R.string.paga),
-                tint = MaterialTheme.colorScheme.outline
-            )
             FormTextField(
-                modifier = formTextFieldModifier,
-                titulo = stringResource(R.string.paga),
-                campoFormulario = paga,
-                onValorAlterado = onStatusPagamentoAlterado,
-                enabled = !processando
+                modifier = formTextFieldModifier.padding(start = 24.dp),
+                titulo = stringResource(R.string.data),
+                campoFormulario = data,
+                onValorAlterado = onDataAlterada,
+                keyboardType = KeyboardType.Number,
+                keyboardCapitalization = KeyboardCapitalization.Words,
+                enabled = !processando,
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.CalendarMonth,
+                        contentDescription = stringResource(R.string.data),
+                        tint = MaterialTheme.colorScheme.outline
+                    )
+                },
+                readOnly = true
             )
         }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Filled.AccountBalance,
-                contentDescription = stringResource(R.string.tipo),
-                tint = MaterialTheme.colorScheme.outline
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 36.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Checkbox(
+                checked = false,
+                onCheckedChange = null // null recommended for accessibility with screenreaders
+
             )
-            FormTextField(
-                modifier = formTextFieldModifier,
-                titulo = stringResource(R.string.tipo),
-                campoFormulario = tipo,
-                onValorAlterado = onTipoAlterado,
-                enabled = !processando
+            Text(
+                modifier = Modifier.padding(10.dp),
+                text = "Paga"
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            RadioButton(
+                selected = true,
+                onClick = { }
+            )
+            Text(
+                //modifier = Modifier.padding(10.dp),
+                text = "Despesa"
+            )
+            RadioButton(
+                selected = true,
+                onClick = { }
+            )
+            Text(
+                // modifier = Modifier.padding(10.dp),
+                text = "Receita"
             )
         }
     }
 }
+
 @Composable
 fun FormTextField(
     modifier: Modifier = Modifier,
@@ -337,7 +359,9 @@ fun FormTextField(
     keyboardCapitalization: KeyboardCapitalization = KeyboardCapitalization.Sentences,
     keyboardImeAction: ImeAction = ImeAction.Next,
     keyboardType: KeyboardType = KeyboardType.Text,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    trailingIcon: @Composable() (() -> Unit)? = null,
+    readOnly: Boolean = false,
 ) {
     Column(
         modifier = modifier,
@@ -355,7 +379,9 @@ fun FormTextField(
                 imeAction = keyboardImeAction,
                 keyboardType = keyboardType
             ),
-            visualTransformation = visualTransformation
+            visualTransformation = visualTransformation,
+            trailingIcon = trailingIcon,
+            readOnly = readOnly
         )
         if (campoFormulario.contemErro) {
             Text(
@@ -367,6 +393,7 @@ fun FormTextField(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 private fun FormContentPreview() {
