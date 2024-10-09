@@ -1,5 +1,8 @@
 package br.edu.utfpr.trabalhofinal.ui.conta.form
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,9 +51,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.edu.utfpr.trabalhofinal.R
+import br.edu.utfpr.trabalhofinal.data.TipoContaEnum
 import br.edu.utfpr.trabalhofinal.ui.theme.TrabalhoFinalTheme
 import br.edu.utfpr.trabalhofinal.ui.utils.composables.Carregando
 import br.edu.utfpr.trabalhofinal.ui.utils.composables.ErroAoCarregar
+import java.util.Calendar
 
 @Composable
 fun FormularioContaScreen(
@@ -241,12 +246,12 @@ private fun FormContent(
     descricao: CampoFormulario,
     data: CampoFormulario,
     valor: CampoFormulario,
-    paga: CampoFormulario,
-    tipo: CampoFormulario,
+    paga: Boolean,
+    tipo: String,
     onDescricaoAlterada: (String) -> Unit,
     onDataAlterada: (String) -> Unit,
     onValorAlterado: (String) -> Unit,
-    onStatusPagamentoAlterado: (String) -> Unit,
+    onStatusPagamentoAlterado: () -> Unit,
     onTipoAlterado: (String) -> Unit
 ) {
     Column(
@@ -289,6 +294,19 @@ private fun FormContent(
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
+            val context = LocalContext.current
+            val calendar = Calendar.getInstance()
+            val datePickerDialog = DatePickerDialog(
+                context,
+                { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+                    val formattedDate = "$dayOfMonth/${month + 1}/$year"
+                    onDataAlterada(formattedDate)
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+
             FormTextField(
                 modifier = formTextFieldModifier.padding(start = 24.dp),
                 titulo = stringResource(R.string.data),
@@ -301,22 +319,22 @@ private fun FormContent(
                     Icon(
                         imageVector = Icons.Filled.CalendarMonth,
                         contentDescription = stringResource(R.string.data),
-                        tint = MaterialTheme.colorScheme.outline
+                        tint = MaterialTheme.colorScheme.outline,
+                        modifier = Modifier.clickable { datePickerDialog.show() }
                     )
                 },
-                readOnly = true
+                readOnly = true,
             )
         }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 12.dp, horizontal = 36.dp),
+                .padding(vertical = 12.dp, horizontal = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(
-                checked = false,
-                onCheckedChange = null // null recommended for accessibility with screenreaders
-
+                checked = paga,
+                onCheckedChange = { onStatusPagamentoAlterado() }
             )
             Text(
                 modifier = Modifier.padding(10.dp),
@@ -330,21 +348,15 @@ private fun FormContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             RadioButton(
-                selected = true,
-                onClick = { }
+                selected = tipo == TipoContaEnum.DESPESA.toString(),
+                onClick = { onTipoAlterado(TipoContaEnum.DESPESA.toString()) }
             )
-            Text(
-                //modifier = Modifier.padding(10.dp),
-                text = "Despesa"
-            )
+            Text(text = "Despesa")
             RadioButton(
-                selected = true,
-                onClick = { }
+                selected = tipo == TipoContaEnum.RECEITA.toString(),
+                onClick = { onTipoAlterado(TipoContaEnum.RECEITA.toString()) }
             )
-            Text(
-                // modifier = Modifier.padding(10.dp),
-                text = "Receita"
-            )
+            Text(text = "Receita")
         }
     }
 }
@@ -403,8 +415,8 @@ private fun FormContentPreview() {
             descricao = CampoFormulario(),
             data = CampoFormulario(),
             valor = CampoFormulario(),
-            paga = CampoFormulario(),
-            tipo = CampoFormulario(),
+            paga = false,
+            tipo = "Receita",
             onDescricaoAlterada = {},
             onDataAlterada = {},
             onValorAlterado = {},
