@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.ThumbDownOffAlt
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -31,9 +33,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.edu.utfpr.trabalhofinal.R
 import br.edu.utfpr.trabalhofinal.data.Conta
@@ -164,10 +168,40 @@ private fun List(
 ) {
     LazyColumn(modifier = modifier) {
         items(contas) { conta ->
-            val descricao = "${conta.data.formatar()} - ${conta.descricao}"
+            val icon = if (conta.paga) Icons.Filled.ThumbUp else Icons.Filled.ThumbDownOffAlt
+            val color =
+                if (conta.tipo == TipoContaEnum.DESPESA) Color(0xFFCF5355) else Color(0xFF00984E)
+            val valueColor = getTextColor(conta.valor)
             ListItem(
                 modifier = Modifier.clickable { onContaPressed(conta) },
-                headlineContent = { Text(descricao) },
+                headlineContent = {
+                    Column {
+                        Text(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            text = conta.descricao
+                        )
+                        Text(
+                            fontSize = 14.sp,
+                            text = conta.data.formatar()
+                        )
+                    }
+
+                },
+                leadingContent = {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = stringResource(R.string.paga),
+                        tint = color,
+                    )
+                },
+                trailingContent = {
+                    Text(
+                        color = valueColor,
+                        fontSize = 16.sp,
+                        text = conta.valor.formatar()
+                    )
+                }
             )
         }
     }
@@ -182,6 +216,16 @@ private fun ListPreview() {
             onContaPressed = {}
         )
     }
+}
+
+@Composable
+private fun getTextColor(valor: BigDecimal): Color {
+    val color = when (valor.signum()) {
+        -1 -> Color(0xFFCF5355)
+        1 -> Color(0xFF00984E)
+        else -> MaterialTheme.colorScheme.secondary
+    }
+    return color
 }
 
 @Composable
@@ -232,7 +276,7 @@ fun Totalizador(
             modifier = Modifier.width(100.dp),
             textAlign = TextAlign.End,
             text = valor.formatar(),
-            color = textColor
+            color = getTextColor(valor = valor)
         )
         Spacer(Modifier.size(20.dp))
     }

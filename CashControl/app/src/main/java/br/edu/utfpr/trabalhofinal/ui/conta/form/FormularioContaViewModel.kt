@@ -3,6 +3,7 @@ package br.edu.utfpr.trabalhofinal.ui.conta.form
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import br.edu.utfpr.trabalhofinal.R
@@ -83,11 +84,19 @@ class FormularioContaViewModel(
         if (state.valor.valor != novoValor) {
             state = state.copy(
                 valor = state.valor.copy(
-                    valor = novoValor
+                    valor = novoValor,
+                    codigoMensagemErro = validarValor(novoValor)
                 )
             )
         }
     }
+
+    private fun validarValor(valor: String): Int =
+        if (valor.isBlank() || valor.isDigitsOnly().not()) {
+            R.string.valor_invalido
+        } else {
+            0
+        }
 
     fun onStatusPagamentoAlterado() {
         state = state.copy(
@@ -111,11 +120,14 @@ class FormularioContaViewModel(
 
             val formatter = DateTimeFormatter.ofPattern("d/M/yyyy")
 
+            val value = if (state.tipo == TipoContaEnum.RECEITA.toString())
+                BigDecimal(state.valor.valor)
+            else BigDecimal(state.valor.valor).negate()
 
             val conta = state.conta.copy(
                 descricao = state.descricao.valor,
-                data = LocalDate.parse(state.data.valor, formatter), //LocalDate.parse(state.data.valor),
-                valor = BigDecimal(state.valor.valor),
+                data = LocalDate.parse(state.data.valor, formatter),
+                valor = value,
                 paga = state.paga,
                 tipo = TipoContaEnum.valueOf(state.tipo)
             )
@@ -131,6 +143,9 @@ class FormularioContaViewModel(
         state = state.copy(
             descricao = state.descricao.copy(
                 codigoMensagemErro = validarDescricao(state.descricao.valor)
+            ),
+            valor = state.valor.copy(
+                codigoMensagemErro = validarValor(state.valor.valor)
             )
         )
         return state.formularioValido

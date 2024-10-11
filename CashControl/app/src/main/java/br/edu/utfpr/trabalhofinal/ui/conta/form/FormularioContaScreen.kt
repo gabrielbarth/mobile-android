@@ -246,7 +246,7 @@ private fun FormContent(
     descricao: CampoFormulario,
     data: CampoFormulario,
     valor: CampoFormulario,
-    paga: Boolean,
+    paga: Boolean? = false,
     tipo: String,
     onDescricaoAlterada: (String) -> Unit,
     onDataAlterada: (String) -> Unit,
@@ -333,7 +333,7 @@ private fun FormContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Checkbox(
-                checked = paga,
+                checked = paga!!,
                 onCheckedChange = { onStatusPagamentoAlterado() }
             )
             Text(
@@ -393,7 +393,8 @@ fun FormTextField(
             ),
             visualTransformation = visualTransformation,
             trailingIcon = trailingIcon,
-            readOnly = readOnly
+            readOnly = readOnly,
+
         )
         if (campoFormulario.contemErro) {
             Text(

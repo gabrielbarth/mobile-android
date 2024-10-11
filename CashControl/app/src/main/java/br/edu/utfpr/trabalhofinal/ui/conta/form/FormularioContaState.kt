@@ -31,5 +31,5 @@ data class FormularioContaState(
         get(): Boolean = descricao.valido &&
                 data.valido &&
                 valor.valido &&
-                paga && tipo.any()
+                tipo.any()
 }
