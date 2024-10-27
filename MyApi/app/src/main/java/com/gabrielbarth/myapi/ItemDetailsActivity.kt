@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import com.gabrielbarth.myapi.databinding.ActivityItemDetailsBinding
 import com.gabrielbarth.myapi.model.Item
 import com.gabrielbarth.myapi.service.RetrofitClient
@@ -31,6 +32,34 @@ class ItemDetailsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         binding.toolbar.setNavigationOnClickListener {
             finish()
+        }
+        binding.deleteCTA.setOnClickListener {
+            deleteItem()
+        }
+    }
+
+    private fun deleteItem() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = safeApiCall { RetrofitClient.apiService.deleteItem(item.id) }
+            withContext(Dispatchers.Main) {
+                when (result) {
+                    is Result.Error -> {
+                        Toast.makeText(
+                            this@ItemDetailsActivity,
+                            R.string.error_delete,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    is Result.Success -> {
+                        Toast.makeText(
+                            this@ItemDetailsActivity,
+                            R.string.success_delete,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
         }
     }
 

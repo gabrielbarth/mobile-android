@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
             // change back execution to main thread
             withContext(Dispatchers.Main) {
+                binding.swipeRefreshLayout.isRefreshing = false
                 when (result) {
                     is Result.Error -> {}
                     is Result.Success -> {
@@ -51,15 +52,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleOnSucess(data: List<Item>) {
         val adapter = ItemAdapter(data) {
-            startActivity(ItemDetailsActivity.newIntent(
-                this,
-                it.id
-            ))
+            startActivity(
+                ItemDetailsActivity.newIntent(
+                    this,
+                    it.id
+                )
+            )
         }
         binding.recyclerView.adapter = adapter
     }
 
     private fun setupView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.swipeRefreshLayout.isRefreshing = true
+            fetchItems()
+        }
+        binding.addCta.setOnClickListener {
+            startActivity(NewItemActivity.newIntent(this))
+        }
     }
 }
