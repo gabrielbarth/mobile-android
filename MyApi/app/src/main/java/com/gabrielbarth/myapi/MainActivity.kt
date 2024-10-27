@@ -50,7 +50,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleOnSucess(data: List<Item>) {
-        val adapter = ItemAdapter(data)
+        val adapter = ItemAdapter(data) {
+            startActivity(ItemDetailsActivity.newIntent(
+                this,
+                it.id
+            ))
+        }
         binding.recyclerView.adapter = adapter
     }
 
