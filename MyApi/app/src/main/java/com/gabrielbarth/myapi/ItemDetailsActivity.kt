@@ -10,6 +10,7 @@ import com.gabrielbarth.myapi.model.Item
 import com.gabrielbarth.myapi.service.RetrofitClient
 import com.gabrielbarth.myapi.service.Result
 import com.gabrielbarth.myapi.service.safeApiCall
+import com.gabrielbarth.myapi.ui.loadUrl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -83,6 +84,7 @@ class ItemDetailsActivity : AppCompatActivity() {
         binding.name.text = "${item.value.name} ${item.value.surname}"
         binding.age.text = getString(R.string.item_age, item.value.age.toString())
         binding.address.text = item.value.address
+        binding.image.loadUrl(item.value.imageUrl)
     }
 
     companion object {

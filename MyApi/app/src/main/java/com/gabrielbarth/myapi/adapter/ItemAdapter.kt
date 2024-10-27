@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gabrielbarth.myapi.R
 import com.gabrielbarth.myapi.model.Item
 import com.gabrielbarth.myapi.ui.CircleTransform
+import com.gabrielbarth.myapi.ui.loadUrl
 import com.squareup.picasso.Picasso
 
 class ItemAdapter(
@@ -40,12 +41,6 @@ class ItemAdapter(
         holder.ageTextView.text =
             holder.itemView.context.getString(R.string.item_age, item.value.age.toString())
         holder.addressTextView.text = item.value.address
-
-        Picasso.get()
-            .load(item.value.imageUrl)
-            .placeholder(R.drawable.ic_download)
-            .error(R.drawable.ic_error)
-            .transform(CircleTransform())
-            .into(holder.imageView)
+        holder.imageView.loadUrl(item.value.imageUrl)
     }
 }
