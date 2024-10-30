@@ -21,7 +21,7 @@ class ItemAdapter(
         val imageView: ImageView = view.findViewById(R.id.image)
         val fullNameTextView: TextView = view.findViewById(R.id.name)
         val ageTextView: TextView = view.findViewById(R.id.age)
-        val addressTextView: TextView = view.findViewById(R.id.address)
+        val professionTextView: TextView = view.findViewById(R.id.profession)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -40,7 +40,7 @@ class ItemAdapter(
         holder.fullNameTextView.text = "${item.value.name} ${item.value.surname}"
         holder.ageTextView.text =
             holder.itemView.context.getString(R.string.item_age, item.value.age.toString())
-        holder.addressTextView.text = item.value.address
+        holder.professionTextView.text = item.value.profession
         holder.imageView.loadUrl(item.value.imageUrl)
     }
 }

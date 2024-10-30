@@ -37,6 +37,40 @@ class ItemDetailsActivity : AppCompatActivity() {
         binding.deleteCTA.setOnClickListener {
             deleteItem()
         }
+        binding.editCTA.setOnClickListener {
+            editItem()
+        }
+    }
+
+    private fun editItem() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = safeApiCall {
+                RetrofitClient.apiService.updateItem(
+                    item.id,
+                    item.value.copy(profession = binding.profession.text.toString())
+                )
+            }
+            withContext(Dispatchers.Main) {
+                when (result) {
+                    is Result.Error -> {
+                        Toast.makeText(
+                            this@ItemDetailsActivity,
+                            R.string.unknown_error,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    is Result.Success -> {
+                        Toast.makeText(
+                            this@ItemDetailsActivity,
+                            R.string.success_update,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        finish()
+                    }
+                }
+            }
+        }
     }
 
     private fun deleteItem() {
@@ -58,6 +92,7 @@ class ItemDetailsActivity : AppCompatActivity() {
                             R.string.success_delete,
                             Toast.LENGTH_SHORT
                         ).show()
+                        finish()
                     }
                 }
             }
@@ -75,6 +110,7 @@ class ItemDetailsActivity : AppCompatActivity() {
                         item = result.data
                         handleSuccess()
                     }
+
                 }
             }
         }
@@ -83,7 +119,7 @@ class ItemDetailsActivity : AppCompatActivity() {
     private fun handleSuccess() {
         binding.name.text = "${item.value.name} ${item.value.surname}"
         binding.age.text = getString(R.string.item_age, item.value.age.toString())
-        binding.address.text = item.value.address
+        binding.profession.setText(item.value.profession)
         binding.image.loadUrl(item.value.imageUrl)
     }
 
