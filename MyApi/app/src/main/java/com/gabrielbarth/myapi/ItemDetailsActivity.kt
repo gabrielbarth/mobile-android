@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.gabrielbarth.myapi.databinding.ActivityItemDetailsBinding
 import com.gabrielbarth.myapi.model.Item
@@ -11,20 +12,28 @@ import com.gabrielbarth.myapi.service.RetrofitClient
 import com.gabrielbarth.myapi.service.Result
 import com.gabrielbarth.myapi.service.safeApiCall
 import com.gabrielbarth.myapi.ui.loadUrl
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ItemDetailsActivity : AppCompatActivity() {
+class ItemDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityItemDetailsBinding
     private lateinit var item: Item
+    private lateinit var mMap: GoogleMap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityItemDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupView()
         loadItem()
+        setupGoogleMap()
     }
 
     private fun setupView() {
@@ -40,6 +49,12 @@ class ItemDetailsActivity : AppCompatActivity() {
         binding.editCTA.setOnClickListener {
             editItem()
         }
+    }
+
+    private fun setupGoogleMap() {
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
     }
 
     private fun editItem() {
@@ -121,6 +136,32 @@ class ItemDetailsActivity : AppCompatActivity() {
         binding.age.text = getString(R.string.item_age, item.value.age.toString())
         binding.profession.setText(item.value.profession)
         binding.image.loadUrl(item.value.imageUrl)
+        loadItemLocationInGoogleMap()
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        if (::item.isInitialized) {
+            loadItemLocationInGoogleMap()
+        }
+    }
+
+    private fun loadItemLocationInGoogleMap() {
+        item.value.location?.let {
+            binding.googleMapContent.visibility = View.VISIBLE
+            val latLng = LatLng(it.latitude, it.longitude)
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(it.name)
+            )
+            mMap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    latLng,
+                    17f
+                )
+            )
+        }
     }
 
     companion object {
