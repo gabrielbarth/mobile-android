@@ -5,6 +5,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.location.Location
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.checkSelfPermission
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gabrielbarth.myapi.adapter.ItemAdapter
+import com.gabrielbarth.myapi.database.DatabaseBuilder
+import com.gabrielbarth.myapi.database.model.UserLocation
 import com.gabrielbarth.myapi.databinding.ActivityMainBinding
 import com.gabrielbarth.myapi.model.Item
 import com.gabrielbarth.myapi.service.Result
@@ -35,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        requestLocationPermission()
         setupView()
     }
 
@@ -94,6 +98,17 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient.lastLocation.addOnCompleteListener { task: Task<Location> ->
             if (task.isSuccessful && task.result != null) {
                 val location = task.result
+                val userLocation =
+                    UserLocation(latitude = location.latitude, longitude = location.longitude)
+                Log.d(
+                    "HELLO_WORLD",
+                    "Lat: ${userLocation.latitude} Long: ${userLocation.longitude}"
+                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    DatabaseBuilder.getInstance()
+                        .userLocationDao()
+                        .insert(userLocation)
+                }
             } else {
                 Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_SHORT).show()
             }
