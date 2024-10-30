@@ -60,6 +60,9 @@ dependencies {
     // picasso
     implementation("com.squareup.picasso:picasso:2.8")
     implementation(libs.androidx.activity)
+    // Localização
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
