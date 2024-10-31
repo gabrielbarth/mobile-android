@@ -18,6 +18,7 @@ import com.gabrielbarth.myapi.service.safeApiCall
 import com.google.android.gms.location.FusedLocationProviderClient
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat.checkSelfPermission
+import com.gabrielbarth.myapi.model.ItemLocation
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -129,16 +130,26 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun save() {
         if (!validateForm()) return
+
+        val name = binding.name.text.toString()
+        val itemPosition = selectedMarker?.position?.let {
+            ItemLocation(
+                name = name,
+                it.latitude,
+                it.longitude
+            )
+        }
+
         CoroutineScope(Dispatchers.IO).launch {
             val id = SecureRandom().nextInt().toString()
             val itemValue = ItemValue(
                 id,
-                binding.name.text.toString(),
+                name,
                 binding.surname.text.toString(),
                 binding.profession.text.toString(),
                 binding.imageUrl.text.toString(),
                 binding.age.text.toString().toInt(),
-                location = null,
+                location = itemPosition,
                 Date()
             )
             val result = safeApiCall { RetrofitClient.apiService.addItem(itemValue) }
