@@ -2,6 +2,8 @@ package com.gabrielbarth.myapi
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Bundle
 import android.location.Location
@@ -156,5 +158,9 @@ class MainActivity : AppCompatActivity() {
         binding.addCta.setOnClickListener {
             startActivity(NewItemActivity.newIntent(this))
         }
+    }
+
+    companion object {
+        fun newIntent(context: Context) = Intent(context, MainActivity::class.java)
     }
 }
