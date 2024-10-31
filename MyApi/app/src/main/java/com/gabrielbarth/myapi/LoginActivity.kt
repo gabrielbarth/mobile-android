@@ -1,5 +1,6 @@
 package com.gabrielbarth.myapi
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -36,7 +37,15 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupGoogleLogin()
         setupView()
+        verifyLoggedUser()
     }
+
+    private fun verifyLoggedUser() {
+        if (auth.currentUser != null) {
+            navigateToMainActivity()
+        }
+    }
+
 
     private fun setupGoogleLogin() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -74,9 +83,7 @@ class LoginActivity : AppCompatActivity() {
         if (task.isSuccessful) {
             val user = auth.currentUser
             Log.d("LoginActivity", "LoginType: $loginType User: ${user?.uid}")
-            startActivity(
-                MainActivity.newIntent(this)
-            )
+            navigateToMainActivity()
         } else {
             Toast.makeText(
                 this,
@@ -84,6 +91,11 @@ class LoginActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun navigateToMainActivity() {
+        startActivity(MainActivity.newIntent(this))
+        finish()
     }
 
     private fun setupView() {
@@ -96,7 +108,6 @@ class LoginActivity : AppCompatActivity() {
         binding.btnVerifySms.setOnClickListener {
             verifyCode()
         }
-
     }
 
     private fun sendVerificationCode() {
@@ -146,5 +157,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun signIn() {
         googleSignInLauncher.launch(googleSignInClient.signInIntent)
+    }
+
+    companion object {
+        fun newIntent(context: Context) = Intent(context, LoginActivity::class.java)
     }
 }
