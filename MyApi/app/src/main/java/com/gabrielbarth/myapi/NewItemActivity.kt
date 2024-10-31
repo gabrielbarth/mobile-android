@@ -35,14 +35,17 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.security.SecureRandom
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.UUID
 
 class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -58,8 +61,7 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val imageBitmap = BitmapFactory.decodeFile(imageFile!!.path)
-            uploadImageToFirebase(imageBitmap)
+            binding.imageUrl.setText("Imagem Obtida")
         }
     }
 
@@ -77,7 +79,7 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.mapContent.visibility = View.VISIBLE
         getDeviceLocation()
         mMap.setOnMapClickListener { latLng: LatLng ->
-            // Limpar marcador anterior, se existir
+            // clear marker if exists
             selectedMarker?.remove()
 
             selectedMarker = mMap.addMarker(
@@ -89,7 +91,36 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun uploadImageToFirebase(bitmap: Bitmap) {
+    private fun uploadImageToFirebase() {
+        // init firebase storage
+        val storageRef = FirebaseStorage.getInstance().reference
+
+        // create a reference to the file on firebase
+        val imagesRef = storageRef.child("images/${UUID.randomUUID()}.jpg")
+        // convert bitmap to baos
+        val baos = ByteArrayOutputStream()
+        val imageBitmap = BitmapFactory.decodeFile(imageFile!!.path)
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+        // disable buttons to avoid double click
+        binding.loadImageProgress.visibility = View.VISIBLE
+        binding.takePictureCta.isEnabled = false
+        binding.saveCta.isEnabled = false
+        imagesRef.putBytes(data)
+            .addOnFailureListener {
+                binding.loadImageProgress.visibility = View.GONE
+                binding.takePictureCta.isEnabled = true
+                binding.saveCta.isEnabled = true
+                Toast.makeText(this, "Falha ao realizar o upload", Toast.LENGTH_SHORT).show()
+            }
+            .addOnSuccessListener {
+                binding.loadImageProgress.visibility = View.GONE
+                binding.takePictureCta.isEnabled = true
+                binding.saveCta.isEnabled = true
+                imagesRef.downloadUrl.addOnSuccessListener { uri ->
+                    saveData(uri.toString())
+                }
+            }
     }
 
     private fun setupGoogleMap() {
@@ -195,7 +226,7 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
         // returns uri to the file
         return FileProvider.getUriForFile(
             this,
-            "com.example.minhaprimeiraapi.fileprovider",
+            "com.gabrielbarth.myapi.fileprovider",
             imageFile!!
         )
     }
@@ -212,6 +243,10 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun save() {
         if (!validateForm()) return
 
+        uploadImageToFirebase()
+    }
+
+    private fun saveData(imageUrl: String) {
         val name = binding.name.text.toString()
         val itemPosition = selectedMarker?.position?.let {
             ItemLocation(
@@ -227,7 +262,7 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
                 name,
                 binding.surname.text.toString(),
                 binding.profession.text.toString(),
-                binding.imageUrl.text.toString(),
+                imageUrl,
                 binding.age.text.toString().toInt(),
                 location = itemPosition,
                 Date()
@@ -278,10 +313,10 @@ class NewItemActivity : AppCompatActivity(), OnMapReadyCallback {
                 .show()
             return false
         }
-        if (binding.imageUrl.text.toString().isBlank()) {
+        if (imageFile == null) {
             Toast.makeText(
                 this,
-                getString(R.string.error_validate_form, "Image Url"),
+                getString(R.string.error_validate_take_picture),
                 Toast.LENGTH_SHORT
             ).show()
             return false

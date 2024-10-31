@@ -56,9 +56,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:src="@android:drawable/ic_menu_camera"
-        app:layout_constraintTop_toBottomOf="@id/imageUrl"
+        app:layout_constraintEnd_toEndOf="@id/imageUrl"
         app:layout_constraintStart_toStartOf="@id/imageUrl"
-        app:layout_constraintEnd_toEndOf="@id/imageUrl" />
+        app:layout_constraintTop_toBottomOf="@id/imageUrl" />
+
+    <ProgressBar
+        android:id="@+id/loadImageProgress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/takePictureCta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/imageUrl" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/imageUrl"

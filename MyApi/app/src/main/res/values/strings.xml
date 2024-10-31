@@ -15,4 +15,5 @@
     <string name="hint_verify_sms">123456</string>
     <string name="verify_sms">Verificar SMS</string>
     <string name="logout">Logout</string>
+    <string name="error_validate_take_picture">Por favor, tire uma foto</string>
 </resources>
