@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Consulta Cep</string>
+    <string name="digite_o_cep">Digite o CEP</string>
+    <string name="buscar">Buscar</string>
+    <string name="cep">CEP: %s</string>
+    <string name="logradouro">Logradouro: %s</string>
+    <string name="bairro">Bairro: %s</string>
+    <string name="localidade">Localidade: %s</string>
+    <string name="uf">UF: %s</string>
+</resources>
